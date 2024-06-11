@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_contabil
+    environment:
+      POSTGRES_DB: contabil
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+
+  sua_aplicacao:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sua_aplicacao_contabil
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/contabil
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
